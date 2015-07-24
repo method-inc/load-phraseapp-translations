@@ -11,18 +11,17 @@ var _ = require('lodash');
 
 var path = 'https://api.phraseapp.com/v2';
 
-/*
-  Defaults
-
-*/
 module.exports = {
-  initialize: function(options) { 
+  initialize: function(options, callback) { 
     if (!options.access_token || !options.project_id || !options.location) {
-      return console.error('Must supply a value for access_token, project_id, and location');
+      return console.error('Must supply a value for access_token and project_id');
     }
 
-    var config = configure(options);
-    this.download(config);
+    var config = module.exports.configure(options);
+    module.exports.download(config, function(err, res) {
+      if (err) { return callback(err); }
+      return callback(null, res);
+    });
   },
 
   configure: function(options) {

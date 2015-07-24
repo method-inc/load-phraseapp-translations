@@ -300,3 +300,119 @@ describe("#download", function() {
       done();
   });
 });
+
+describe("#initialize", function() {
+  var api, options;
+
+  before(function() {
+    options = {
+      access_token: 1,
+      project_id: 1,
+      location: __dirname
+    };
+
+    api = nock("https://api.phraseapp.com")
+      .persist()
+      .get("/v2/projects/1/locales/en/translations/download")
+      .query({ access_token: 1, file_format: "node_json" })
+      .reply(200, {
+        "greeting": "Hi, %s",
+        "navigation.search": "Search",
+        "navigation.shopping_cart": "Shopping Cart",
+        "navigation.sign_in": "Sign In",
+        "navigation.wishlist": "Wishlist"
+      })
+      .get("/v2/projects/1/locales/de/translations/download")
+      .query({ access_token: 1, file_format: "node_json" })
+      .reply(200, {
+        "greeting": "Hallo, %s",
+        "navigation.search": "Suchen",
+        "navigation.shopping_cart": "Einkaufswagen",
+        "navigation.sign_in": "Anmeldung",
+        "navigation.wishlist": "Wunschzettel"
+      })
+      .get("/v2/projects/1/locales")
+      .query({ access_token: 1 })
+      .reply(200, [
+        {
+            "id": "1",
+            "name": "de",
+            "code": "de",
+            "default": false,
+            "main": false,
+            "rtl": false,
+            "plural_forms": [
+                "zero",
+                "one",
+                "other"
+            ],
+            "created_at": "2015-07-13T15:56:07Z",
+            "updated_at": "2015-07-13T15:56:07Z",
+            "source_locale": null
+        },
+        {
+            "id": "2",
+            "name": "en",
+            "code": "en",
+            "default": true,
+            "main": false,
+            "rtl": false,
+            "plural_forms": [
+                "zero",
+                "one",
+                "other"
+            ],
+            "created_at": "2015-07-13T15:55:44Z",
+            "updated_at": "2015-07-13T15:55:45Z",
+            "source_locale": null
+        }
+      ]);
+  });
+
+  after(function() {
+    api.isDone();
+    fs.unlink(options.location + "/en.js");
+    fs.unlink(options.location + "/de.js");
+  });
+
+  it("downloads all of the files", function(done) {
+    initialize(options, function(err, res) {
+      if (err) return done(err);
+
+      fs.existsSync(options.location + "/en.js");
+      fs.existsSync(options.location + "/de.js");
+    });
+
+    done();
+  });
+
+  it("has the correct contents in the downloaded files", function(done) {
+    var apiFileContents = {};
+    var fileContents = {};
+
+    request("https://api.phraseapp.com/v2/projects/1/locales/en/translations/download?access_token=1&file_format=node_json",
+      function(err, res, body) {
+        if (res.statusCode = 200 && !err) {
+          apiFileContents['en'] = body;
+        }
+      });
+
+    request("https://api.phraseapp.com/v2/projects/1/locales/de/translations/download?access_token=1&file_format=node_json",
+      function(err, res, body) {
+        if (res.statusCode = 200 && !err) {
+          apiFileContents['de'] = body;
+        }
+      });
+
+      initialize(options, function(err, res) {
+        if (err) return done(err);
+
+        fileContents['en'] = fs.readFileSync(options.location + "/en.js").toString();
+        fileContents['de'] = fs.readFileSync(options.location + "/de.js").toString();
+
+        fileContents.should.deep.equal(apiFileContents);
+      }); 
+
+      done();
+  });
+});
