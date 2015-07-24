@@ -51,3 +51,6 @@ loadTranslations.initialize({
 ```
 npm test
 ```
+
+## Release History
+* 0.1.0 Initial release
