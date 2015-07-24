@@ -30,7 +30,7 @@ module.exports = {
     var default_options = {
       file_format: "node_json",
       file_extension: "js",
-      location: __dirname
+      location: process.cwd()
     };
 
     return _.merge(default_options, options);
