@@ -34,8 +34,7 @@ describe("#configure", function() {
       "project_id",
       "file_format",
       "file_extension",
-      "location",
-      "locales"
+      "location"
     );
   });
 
@@ -151,7 +150,7 @@ describe("#downloadTranslationFiles", function() {
       });
   });
 
-  it("creates the translation file", function(done) {
+  it("downloads the translation file", function(done) {
     downloadTranslationFile('en', config, function(err, res) {
       if (err) return done(err);
       fs.exists(res, function(res) {
@@ -258,16 +257,6 @@ describe("#download", function() {
     api.isDone();
     fs.unlink(config.location + "/en.js");
     fs.unlink(config.location + "/de.js");
-  });
-
-
-  it("gets the correct response", function(done) {
-    res = download(config, function(err, res) {
-      if (err) return done(err);
-      res.should.have.members(["de", "en"]);
-    });
-
-    done();
   });
 
   it("downloads all of the files", function(done) {

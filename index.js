@@ -18,8 +18,7 @@ var path = 'https://api.phraseapp.com/v2';
 var default_options = {
   file_format: "node_json",
   file_extension: "js",
-  location: __dirname + "/locales",
-  locales: null
+  location: __dirname + "/locales"
 };
 
 module.exports = {
@@ -40,7 +39,7 @@ module.exports = {
             module.exports.downloadTranslationFile(l, options, function(err, res) {
               if (!err) {
                 console.log("Translation for " + l + " downloaded successfully.");
-                return callback(null, locales);
+                return callback(null, l);
               } else {
                 console.error("Error downloading " + l + ".", err);
                 return callback(err);
