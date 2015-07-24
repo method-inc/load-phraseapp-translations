@@ -32,17 +32,24 @@ module.exports = {
     return _.merge(default_options, options);
   },
 
-  download: function(options) {
-    var locales = this.fetchLocales(options, 
-      function (err, l) {
+  download: function(options, callback) {
+    var config = options;
+    module.exports.fetchLocales(options,
+      function (err, locales) {
         if (!err) {
-          return l;
+          _.each(locales, function(l, options) {
+            module.exports.downloadTranslationFile(l, config, function(err, res) {
+              if (!err) {
+                console.log("Translation for " + l + " downloaded successfully.");
+                return callback(null, locales);
+              } else {
+                console.error("Error downloading " + l + ".", err);
+                return callback(err);
+              }
+            });
+          });
         }
-      }) || options.locales;
-
-    _.each(locales, function(l, options) {
-      this.downloadTranslationFiles(l, options);
-    });
+      });
   },
 
   fetchLocales: function(options, callback) {
