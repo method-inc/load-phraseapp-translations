@@ -20,7 +20,12 @@
     "phraseapp"
   ],
   "author": "Tessa Harmon <tessa@tessaharmon.com> (http://tessaharmon.com)",
-  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/Skookum/load-phraseapp-translations/blob/master/LICENSE-MIT"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/Skookum/sync-phraseapp-translations/issues"
   },
