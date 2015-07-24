@@ -19,7 +19,7 @@ var default_options = {
   file_format: "node_json",
   file_extension: "js",
   location: __dirname + "/locales",
-  locales: ["en"] // Pulls down all locales if unspecified
+  locales: null
 };
 
 module.exports = {
@@ -38,7 +38,7 @@ module.exports = {
         if (!err) {
           return l;
         }
-      });
+      }) || options.locales;
 
     _.each(locales, function(l, options) {
       this.downloadTranslationFiles(l, options);
@@ -59,14 +59,23 @@ module.exports = {
     });
   },
 
-  downloadTranslationFiles: function(locale, options) {
-    var translationPath = path + '/projects/' + options.project_id + '/locales/' + locale + 'translations/download?access_token=' + options.access_token + '&file_format=' + options.file_format;
+  downloadTranslationFile: function(locale, options, callback) {
+    var translationPath = path + '/projects/' + options.project_id + '/locales/' + locale + '/translations/download?access_token=' + options.access_token + '&file_format=' + options.file_format;
     request(translationPath, function(err, res, body) {
-      if (!err && response.statusCode == 200) {
+      if (!err && res.statusCode == 200) {
+        var fileName = options.location + "/" + locale + "." + options.file_extension;
 
+        fs.writeFile(fileName, body, function(err) {
+          if (err) {
+            return console.error("An error occured when downloading translation file", err);
+          }
+
+          return callback(null, fileName);
+        })
       } else if (err) {
-        console.log(err);
+        console.error("An error occured when downloading translation file", err);
+        return callback(err);
       }
-    }).pipe(fs.createWriteStream(options.location + "/" + options.locale + options.file_extension));
+    });
   }
 }

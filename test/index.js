@@ -5,22 +5,10 @@ var should = require("chai").should(),
     initialize = loadTranslations.initialize,
     download = loadTranslations.download,
     fetchLocales = loadTranslations.fetchLocales,
-    downloadFiles = loadTranslations.downloadFiles,
+    downloadTranslationFile = loadTranslations.downloadTranslationFile,
     configure = loadTranslations.configure;
 
 var http = require("http");
-
-// Mock JSON responses from API
-
-  // .get("/v2/projects/1/locales/en/translations/download")
-  // .query(true)
-  // .reply(200, {
-  //   "greeting": "Hi, %s",
-  //   "navigation.search": "Search",
-  //   "navigation.shopping_cart": "Shopping Cart",
-  //   "navigation.sign_in": "Sign In",
-  //   "navigation.wishlist": "Wishlist"
-  // });
 
 describe("#configure", function() {
   before(function() {
@@ -132,5 +120,44 @@ describe("#fetchLocales", function() {
     });
 
     api.isDone();
+  });
+
+  describe("#downloadTranslationFiles", function() {
+    var config, api;
+
+    before(function() {
+      var options = {
+        access_token: 1,
+        project_id: 1
+      };
+
+      config = configure(options);
+    });
+
+    beforeEach(function() {
+      api = nock("https://api.phraseapp.com")
+        .get("/v2/projects/1/locales/en/translations/download")
+        .query(true)
+        .reply(200, {
+          "greeting": "Hi, %s",
+          "navigation.search": "Search",
+          "navigation.shopping_cart": "Shopping Cart",
+          "navigation.sign_in": "Sign In",
+          "navigation.wishlist": "Wishlist"
+        });
+    });
+
+    it("should create the translation file", function(done) {
+      downloadTranslationFile('en', config, function(err, res) {
+        if (err) return done(err);
+        fs.exists(res, function(res) {
+          done();
+        });
+      });
+    });
+
+    afterEach(function() {
+      fs.unlink(config.location + "/en.js");
+    });
   });
 });
