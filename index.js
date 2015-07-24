@@ -78,7 +78,6 @@ module.exports = {
           return callback(null, fileName);
         })
       } else if (err) {
-        console.log(err);
         console.error("An error occured when downloading translation file", err);
         return callback(err);
       }
