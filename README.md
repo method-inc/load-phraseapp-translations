@@ -1,6 +1,11 @@
 # load-phraseapp-translations
 npm module for pulling down translation files from [PhraseApp](http://phraseapp.com/) for a project using the [v2 API](http://docs.phraseapp.com/api/v2/). For use in build scripts.
 
+## Installation
+```
+npm install load-phraseapp-translations --save
+```
+
 ## Usage
 
 ```
@@ -40,4 +45,9 @@ loadTranslations.initialize({
     }
     // Do something else
 });
+```
+
+## Tests
+```
+npm test
 ```
