@@ -1,6 +1,6 @@
 {
   "name": "sync-phraseapp-translations",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Download PhraseApp translation files for your app. Default format is i18n-node-2 compliant.",
   "main": "index.js",
   "scripts": {
