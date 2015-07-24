@@ -1,0 +1,38 @@
+{
+  "name": "sync-phraseapp-translations",
+  "version": "1.0.0",
+  "description": "Download PhraseApp translation files for your app. Default format is i18n-node-2 compliant.",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Skookum/sync-phraseapp-translations.git"
+  },
+  "keywords": [
+    "translation",
+    "i18n",
+    "l10n",
+    "internationalization",
+    "localization",
+    "translations",
+    "phraseapp"
+  ],
+  "author": "Tessa Harmon <tessa@tessaharmon.com> (http://tessaharmon.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Skookum/sync-phraseapp-translations/issues"
+  },
+  "homepage": "https://github.com/Skookum/sync-phraseapp-translations#readme",
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "mocha": "^2.2.5",
+    "nock": "^2.9.1"
+  },
+  "dependencies": {
+    "async": "^1.4.0",
+    "lodash": "^3.10.0",
+    "request": "^2.60.0"
+  }
+}
