@@ -33,12 +33,11 @@ module.exports = {
   },
 
   download: function(options, callback) {
-    var config = options;
     module.exports.fetchLocales(options,
       function (err, locales) {
         if (!err) {
-          _.each(locales, function(l, options) {
-            module.exports.downloadTranslationFile(l, config, function(err, res) {
+          _.each(locales, function(l) {
+            module.exports.downloadTranslationFile(l, options, function(err, res) {
               if (!err) {
                 console.log("Translation for " + l + " downloaded successfully.");
                 return callback(null, locales);
