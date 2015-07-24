@@ -15,19 +15,23 @@ var path = 'https://api.phraseapp.com/v2';
   Defaults
 
 */
-var default_options = {
-  file_format: "node_json",
-  file_extension: "js",
-  location: __dirname + "/locales"
-};
-
 module.exports = {
-  initialize: function(options) {
-    var options = configure(options);
-    this.download(options);
+  initialize: function(options) { 
+    if (!options.access_token || !options.project_id || !options.location) {
+      return console.error('Must supply a value for access_token, project_id, and location');
+    }
+
+    var config = configure(options);
+    this.download(config);
   },
 
   configure: function(options) {
+    var default_options = {
+      file_format: "node_json",
+      file_extension: "js",
+      location: __dirname
+    };
+
     return _.merge(default_options, options);
   },
 
@@ -70,6 +74,7 @@ module.exports = {
     request(translationPath, function(err, res, body) {
       if (!err && res.statusCode == 200) {
         var fileName = options.location + "/" + locale + "." + options.file_extension;
+
         fs.writeFile(fileName, body, function(err) {
           if (err) {
             return console.error("An error occured when downloading translation file", err);
