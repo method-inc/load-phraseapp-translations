@@ -139,6 +139,7 @@ describe("#downloadTranslationFiles", function() {
 
   beforeEach(function() {
     api = nock("https://api.phraseapp.com")
+      .persist()
       .get("/v2/projects/1/locales/en/translations/download")
       .query({ access_token: 1, file_format: "node_json" })
       .reply(200, {
@@ -162,12 +163,11 @@ describe("#downloadTranslationFiles", function() {
   it("should have the correct contents in the translation file", function(done) { 
     var fileContents, apiFileContents, fileName;
 
-    apiFileContents = JSON.stringify({
-        "greeting": "Hi, %s",
-        "navigation.search": "Search",
-        "navigation.shopping_cart": "Shopping Cart",
-        "navigation.sign_in": "Sign In",
-        "navigation.wishlist": "Wishlist"
+    request("https://api.phraseapp.com/v2/projects/1/locales/en/translations/download?access_token=1&file_format=node_json",
+      function(err, res, body) {
+        if (res.statusCode = 200 && !err) {
+          apiFileContents = body;
+        }
       });
 
     downloadTranslationFile('en', config, function(err, res) {
