@@ -17,6 +17,8 @@ module.exports = {
       return console.error('Must supply a value for access_token and project_id');
     }
 
+    if (!callback) { callback = function(err, res) { }; }
+
     var config = module.exports.configure(options);
     module.exports.download(config, function(err, res) {
       if (err) { return callback(err); }

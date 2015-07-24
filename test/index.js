@@ -308,7 +308,7 @@ describe("#initialize", function() {
     options = {
       access_token: 1,
       project_id: 1,
-      location: __dirname
+      location: process.cwd()
     };
 
     api = nock("https://api.phraseapp.com")
