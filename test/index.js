@@ -1,6 +1,7 @@
 var should = require("chai").should(),
     fs = require("fs"),
     nock = require("nock"),
+    request = require("request"),
     loadTranslations = require("../index"),
     initialize = loadTranslations.initialize,
     download = loadTranslations.download,
@@ -11,6 +12,8 @@ var should = require("chai").should(),
 var http = require("http");
 
 describe("#configure", function() {
+  var config;
+
   before(function() {
     var options = {
       access_token: 1,
@@ -56,7 +59,7 @@ describe("#fetchLocales", function() {
   beforeEach(function() {
     api = nock("https://api.phraseapp.com")
       .get("/v2/projects/1/locales")
-      .query(true)
+      .query({ access_token: 1 })
       .reply(200, [
         {
             "id": "1",
@@ -93,13 +96,16 @@ describe("#fetchLocales", function() {
       ]);
   });
 
+  afterEach(function() {
+    api.isDone();
+  });
+
   it("has two locales", function(done) {
     fetchLocales(config, function(err, res) {
       if (err) return done(err);
       res.should.have.length(2);
       done();
     });
-    api.isDone();
   });
 
   it("is an array", function(done) {
@@ -107,9 +113,7 @@ describe("#fetchLocales", function() {
       if (err) return done(err);
       res.should.be.an("array");
       done();
-    })
-
-    api.isDone();
+    });
   });
 
   it("contains German and English", function(done) {
@@ -118,46 +122,65 @@ describe("#fetchLocales", function() {
       res.should.have.members(["de", "en"]);
       done();
     });
+  });
+});
 
-    api.isDone();
+describe("#downloadTranslationFiles", function() {
+  var config, api;
+
+  before(function() {
+    var options = {
+      access_token: 1,
+      project_id: 1
+    };
+
+    config = configure(options);
   });
 
-  describe("#downloadTranslationFiles", function() {
-    var config, api;
+  beforeEach(function() {
+    api = nock("https://api.phraseapp.com")
+      .get("/v2/projects/1/locales/en/translations/download")
+      .query({ access_token: 1, file_format: "node_json" })
+      .reply(200, {
+        "greeting": "Hi, %s",
+        "navigation.search": "Search",
+        "navigation.shopping_cart": "Shopping Cart",
+        "navigation.sign_in": "Sign In",
+        "navigation.wishlist": "Wishlist"
+      });
+  });
 
-    before(function() {
-      var options = {
-        access_token: 1,
-        project_id: 1
-      };
-
-      config = configure(options);
-    });
-
-    beforeEach(function() {
-      api = nock("https://api.phraseapp.com")
-        .get("/v2/projects/1/locales/en/translations/download")
-        .query(true)
-        .reply(200, {
-          "greeting": "Hi, %s",
-          "navigation.search": "Search",
-          "navigation.shopping_cart": "Shopping Cart",
-          "navigation.sign_in": "Sign In",
-          "navigation.wishlist": "Wishlist"
-        });
-    });
-
-    it("should create the translation file", function(done) {
-      downloadTranslationFile('en', config, function(err, res) {
-        if (err) return done(err);
-        fs.exists(res, function(res) {
-          done();
-        });
+  it("should create the translation file", function(done) {
+    downloadTranslationFile('en', config, function(err, res) {
+      if (err) return done(err);
+      fs.exists(res, function(res) {
+        done();
       });
     });
+  });
 
-    afterEach(function() {
-      fs.unlink(config.location + "/en.js");
+  it("should have the correct contents in the translation file", function(done) { 
+    var fileContents, apiFileContents, fileName;
+
+    apiFileContents = JSON.stringify({
+        "greeting": "Hi, %s",
+        "navigation.search": "Search",
+        "navigation.shopping_cart": "Shopping Cart",
+        "navigation.sign_in": "Sign In",
+        "navigation.wishlist": "Wishlist"
+      });
+
+    downloadTranslationFile('en', config, function(err, res) {
+      if (err) return done(err);
+      fileName = res;
+      fileContents = fs.readFileSync(fileName).toString();
+      fileContents.should.equal(apiFileContents);
+      done();
     });
+  });
+
+  afterEach(function() {
+    fs.unlink(config.location + "/en.js");
+    api.isDone();
   });
 });

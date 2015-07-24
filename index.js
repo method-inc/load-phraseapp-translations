@@ -61,10 +61,10 @@ module.exports = {
 
   downloadTranslationFile: function(locale, options, callback) {
     var translationPath = path + '/projects/' + options.project_id + '/locales/' + locale + '/translations/download?access_token=' + options.access_token + '&file_format=' + options.file_format;
+
     request(translationPath, function(err, res, body) {
       if (!err && res.statusCode == 200) {
         var fileName = options.location + "/" + locale + "." + options.file_extension;
-
         fs.writeFile(fileName, body, function(err) {
           if (err) {
             return console.error("An error occured when downloading translation file", err);
@@ -73,6 +73,7 @@ module.exports = {
           return callback(null, fileName);
         })
       } else if (err) {
+        console.log(err);
         console.error("An error occured when downloading translation file", err);
         return callback(err);
       }
