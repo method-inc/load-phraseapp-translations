@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Skookum/load-phraseapp-translations.svg?branch=master)](https://travis-ci.org/Skookum/load-phraseapp-translations)
+
 # load-phraseapp-translations
 npm module for pulling down translation files from [PhraseApp](http://phraseapp.com/) for a project using the [v2 API](http://docs.phraseapp.com/api/v2/). For use in build scripts.
 
