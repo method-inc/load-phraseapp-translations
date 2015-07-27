@@ -20,6 +20,7 @@
     "phraseapp"
   ],
   "author": "Tessa Harmon <tessa@tessaharmon.com> (http://tessaharmon.com)",
+  "license": "MIT",
   "licenses": [
     {
       "type": "MIT",
