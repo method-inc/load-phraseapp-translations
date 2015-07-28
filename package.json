@@ -1,5 +1,5 @@
 {
-  "name": "sync-phraseapp-translations",
+  "name": "load-phraseapp-translations",
   "version": "0.1.0",
   "description": "Download PhraseApp translation files for your app. Default format is i18n-node-2 compliant.",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Skookum/sync-phraseapp-translations.git"
+    "url": "git+https://github.com/Skookum/load-phraseapp-translations.git"
   },
   "keywords": [
     "translation",
@@ -28,9 +28,9 @@
     }
   ],
   "bugs": {
-    "url": "https://github.com/Skookum/sync-phraseapp-translations/issues"
+    "url": "https://github.com/Skookum/load-phraseapp-translations/issues"
   },
-  "homepage": "https://github.com/Skookum/sync-phraseapp-translations#readme",
+  "homepage": "https://github.com/Skookum/load-phraseapp-translations#readme",
   "devDependencies": {
     "chai": "^3.2.0",
     "mocha": "^2.2.5",
