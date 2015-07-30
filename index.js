@@ -73,7 +73,6 @@ module.exports = {
 
   downloadTranslationFile: function(locale, options, callback) {
     var translationPath = path + '/projects/' + options.project_id + '/locales/' + locale + '/download?access_token=' + options.access_token + '&file_format=' + options.file_format;
-    console.log(translationPath);
 
     request(translationPath, function(err, res, body) {
       if (!err && res.statusCode == 200) {
