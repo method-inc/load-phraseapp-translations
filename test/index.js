@@ -139,7 +139,7 @@ describe("#downloadTranslationFiles", function() {
   beforeEach(function() {
     api = nock("https://api.phraseapp.com")
       .persist()
-      .get("/v2/projects/1/locales/en/translations/download")
+      .get("/v2/projects/1/locales/en/download")
       .query({ access_token: 1, file_format: "node_json" })
       .reply(200, {
         "greeting": "Hi, %s",
@@ -162,7 +162,7 @@ describe("#downloadTranslationFiles", function() {
   it("has the correct contents in the translation file", function(done) { 
     var fileContents, apiFileContents, fileName;
 
-    request("https://api.phraseapp.com/v2/projects/1/locales/en/translations/download?access_token=1&file_format=node_json",
+    request("https://api.phraseapp.com/v2/projects/1/locales/en/download?access_token=1&file_format=node_json",
       function(err, res, body) {
         if (res.statusCode = 200 && !err) {
           apiFileContents = body;
@@ -197,7 +197,7 @@ describe("#download", function() {
 
     api = nock("https://api.phraseapp.com")
       .persist()
-      .get("/v2/projects/1/locales/en/translations/download")
+      .get("/v2/projects/1/locales/en/download")
       .query({ access_token: 1, file_format: "node_json" })
       .reply(200, {
         "greeting": "Hi, %s",
@@ -206,7 +206,7 @@ describe("#download", function() {
         "navigation.sign_in": "Sign In",
         "navigation.wishlist": "Wishlist"
       })
-      .get("/v2/projects/1/locales/de/translations/download")
+      .get("/v2/projects/1/locales/de/download")
       .query({ access_token: 1, file_format: "node_json" })
       .reply(200, {
         "greeting": "Hallo, %s",
@@ -274,14 +274,14 @@ describe("#download", function() {
     var apiFileContents = {};
     var fileContents = {};
 
-    request("https://api.phraseapp.com/v2/projects/1/locales/en/translations/download?access_token=1&file_format=node_json",
+    request("https://api.phraseapp.com/v2/projects/1/locales/en/download?access_token=1&file_format=node_json",
       function(err, res, body) {
         if (res.statusCode = 200 && !err) {
           apiFileContents['en'] = body;
         }
       });
 
-    request("https://api.phraseapp.com/v2/projects/1/locales/de/translations/download?access_token=1&file_format=node_json",
+    request("https://api.phraseapp.com/v2/projects/1/locales/de/download?access_token=1&file_format=node_json",
       function(err, res, body) {
         if (res.statusCode = 200 && !err) {
           apiFileContents['de'] = body;
@@ -313,7 +313,7 @@ describe("#initialize", function() {
 
     api = nock("https://api.phraseapp.com")
       .persist()
-      .get("/v2/projects/1/locales/en/translations/download")
+      .get("/v2/projects/1/locales/en/download")
       .query({ access_token: 1, file_format: "node_json" })
       .reply(200, {
         "greeting": "Hi, %s",
@@ -322,7 +322,7 @@ describe("#initialize", function() {
         "navigation.sign_in": "Sign In",
         "navigation.wishlist": "Wishlist"
       })
-      .get("/v2/projects/1/locales/de/translations/download")
+      .get("/v2/projects/1/locales/de/download")
       .query({ access_token: 1, file_format: "node_json" })
       .reply(200, {
         "greeting": "Hallo, %s",
@@ -390,14 +390,14 @@ describe("#initialize", function() {
     var apiFileContents = {};
     var fileContents = {};
 
-    request("https://api.phraseapp.com/v2/projects/1/locales/en/translations/download?access_token=1&file_format=node_json",
+    request("https://api.phraseapp.com/v2/projects/1/locales/en/download?access_token=1&file_format=node_json",
       function(err, res, body) {
         if (res.statusCode = 200 && !err) {
           apiFileContents['en'] = body;
         }
       });
 
-    request("https://api.phraseapp.com/v2/projects/1/locales/de/translations/download?access_token=1&file_format=node_json",
+    request("https://api.phraseapp.com/v2/projects/1/locales/de/download?access_token=1&file_format=node_json",
       function(err, res, body) {
         if (res.statusCode = 200 && !err) {
           apiFileContents['de'] = body;

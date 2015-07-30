@@ -17,15 +17,14 @@ module.exports = {
     }
 
     if (!callback) { 
-      callback = function(err, res) { 
-        if (err) { throw new Error(err); }};
-        return console.info(res);
+      callback = function(err) { 
+        if (err) { throw new Error(err); }
+      };
     }
 
     var config = module.exports.configure(options);
     module.exports.download(config, function(err, res) {
       if (err) { return callback(err); }
-      return callback(null, res);
     });
   },
 
@@ -47,7 +46,7 @@ module.exports = {
             module.exports.downloadTranslationFile(l, options, function(err, res) {
               if (!err) {
                 console.log("Translation for " + l + " downloaded successfully.");
-                return callback(null, l);
+                return callback(null, 'Success');
               } else {
                 console.error("Error downloading " + l + ".", err);
                 return callback(err);
@@ -73,7 +72,8 @@ module.exports = {
   },
 
   downloadTranslationFile: function(locale, options, callback) {
-    var translationPath = path + '/projects/' + options.project_id + '/locales/' + locale + '/translations/download?access_token=' + options.access_token + '&file_format=' + options.file_format;
+    var translationPath = path + '/projects/' + options.project_id + '/locales/' + locale + '/download?access_token=' + options.access_token + '&file_format=' + options.file_format;
+    console.log(translationPath);
 
     request(translationPath, function(err, res, body) {
       if (!err && res.statusCode == 200) {
