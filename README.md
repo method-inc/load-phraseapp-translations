@@ -55,4 +55,5 @@ npm test
 ```
 
 ## Release History
+* 0.1.1 Cleaned up unused dependencies; fixed erroneous API call.
 * 0.1.0 Initial release
