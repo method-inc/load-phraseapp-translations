@@ -11,13 +11,13 @@ var _ = require('lodash');
 var path = 'https://api.phraseapp.com/v2';
 
 module.exports = {
-  initialize: function(options, callback) { 
+  initialize: function(options, callback) {
     if (!options.access_token || !options.project_id) {
       throw new Error('Must supply a value for access_token and project_id');
     }
 
-    if (!callback) { 
-      callback = function(err) { 
+    if (!callback) {
+      callback = function(err) {
         if (err) { throw new Error(err); }
       };
     }
@@ -32,7 +32,8 @@ module.exports = {
     var default_options = {
       file_format: "node_json",
       file_extension: "js",
-      location: process.cwd()
+      location: process.cwd(),
+      transform: function(translations) { return translations; }
     };
 
     return _.merge(default_options, options);
@@ -76,9 +77,10 @@ module.exports = {
 
     request(translationPath, function(err, res, body) {
       if (!err && res.statusCode == 200) {
+        var transformed = options.transform( JSON.parse(body) );
         var fileName = options.location + "/" + locale + "." + options.file_extension;
 
-        fs.writeFile(fileName, body, function(err) {
+        fs.writeFile(fileName, JSON.stringify(transformed), function(err) {
           if (err) {
             return console.error("An error occured when downloading translation file", err);
           }

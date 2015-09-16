@@ -2,6 +2,7 @@ var should = require("chai").should(),
     fs = require("fs"),
     nock = require("nock"),
     request = require("request"),
+    _ = require('lodash'),
     loadTranslations = require("../index"),
     initialize = loadTranslations.initialize,
     download = loadTranslations.download,
@@ -30,16 +31,24 @@ describe("#configure", function() {
 
   it("has the required keys", function() {
     config.should.have.all.keys(
-      "access_token", 
+      "access_token",
       "project_id",
       "file_format",
       "file_extension",
-      "location"
+      "location",
+      "transform"
     );
   });
 
   it("overrides file location", function() {
     config.should.have.property('location', 'test');
+  })
+
+  it("default transform does nothing", function() {
+    var output = {
+      "test": "file"
+    };
+    config.transform(output).should.equal(output);
   })
 });
 
@@ -159,7 +168,7 @@ describe("#downloadTranslationFiles", function() {
     });
   });
 
-  it("has the correct contents in the translation file", function(done) { 
+  it("has the correct contents in the translation file", function(done) {
     var fileContents, apiFileContents, fileName;
 
     request("https://api.phraseapp.com/v2/projects/1/locales/en/download?access_token=1&file_format=node_json",
@@ -295,9 +304,29 @@ describe("#download", function() {
         fileContents['de'] = fs.readFileSync(config.location + "/de.js").toString();
 
         fileContents.should.deep.equal(apiFileContents);
-      }); 
+      });
 
       done();
+  });
+
+  it("transforms the data correctly", function(done) {
+    var apiFileContents = {};
+    var fileContents = {};
+    var new_config = _.extend({}, config, {
+      transform: function(data) {
+        data.test_key = 'hello';
+        return data;
+      }
+    });
+
+    download(new_config, function(err, res) {
+      if (err) return done(err);
+
+      fileContents['en'] = fs.readFileSync(config.location + "/en.js").toString();
+
+      JSON.parse(fileContents['en']).should.contain.key('test_key');
+    });
+    done();
   });
 });
 
@@ -411,7 +440,7 @@ describe("#initialize", function() {
         fileContents['de'] = fs.readFileSync(options.location + "/de.js").toString();
 
         fileContents.should.deep.equal(apiFileContents);
-      }); 
+      });
 
       done();
   });
