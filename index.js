@@ -36,7 +36,7 @@ module.exports = {
       transform: function(translations) { return translations; }
     };
 
-    return _.merge(default_options, options);
+    return _.extend({}, default_options, options);
   },
 
   download: function(options, callback) {
