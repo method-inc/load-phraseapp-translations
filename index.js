@@ -77,10 +77,10 @@ module.exports = {
 
     request(translationPath, function(err, res, body) {
       if (!err && res.statusCode == 200) {
-        var transformed = options.transform( JSON.parse(body) );
+        var transformed = options.transform(body);
         var fileName = options.location + "/" + locale + "." + options.file_extension;
 
-        fs.writeFile(fileName, JSON.stringify(transformed), function(err) {
+        fs.writeFile(fileName, transformed, function(err) {
           if (err) {
             return console.error("An error occured when downloading translation file", err);
           }
