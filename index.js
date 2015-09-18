@@ -76,7 +76,7 @@ module.exports = {
     var translationPath = path + '/projects/' + options.project_id + '/locales/' + locale + '/download?access_token=' + options.access_token + '&file_format=' + options.file_format;
 
     request(translationPath, function(err, res, body) {
-      if (!err && res.statusCode == 200) {
+      if (!err && res.statusCode >= 200 && res.statusCode < 300) {
         var transformed = options.transform(body);
         var fileName = options.location + "/" + locale + "." + options.file_extension;
 
@@ -87,9 +87,13 @@ module.exports = {
 
           return callback(null, fileName);
         })
-      } else if (err) {
-        console.error("An error occured when downloading translation file", err);
-        return callback(err);
+      } else {
+        if (err) {
+          console.error("An error occured when downloading translation file", err);
+          return callback(err);
+        }
+        console.error("Got status code " + res.statusCode);
+        return callback(true);
       }
     });
   }
