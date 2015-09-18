@@ -7,6 +7,7 @@
 var request = require('request');
 var fs = require('fs');
 var _ = require('lodash');
+var async = require('async');
 
 var path = 'https://api.phraseapp.com/v2';
 
@@ -23,9 +24,7 @@ module.exports = {
     }
 
     var config = module.exports.configure(options);
-    module.exports.download(config, function(err, res) {
-      if (err) { return callback(err); }
-    });
+    module.exports.download(config, callback);
   },
 
   configure: function(options) {
@@ -42,18 +41,19 @@ module.exports = {
   download: function(options, callback) {
     module.exports.fetchLocales(options,
       function (err, locales) {
+        console.log("Got locales", locales);
         if (!err) {
-          _.each(locales, function(l) {
+          async.each(locales, function(l, callback) {
             module.exports.downloadTranslationFile(l, options, function(err, res) {
               if (!err) {
                 console.log("Translation for " + l + " downloaded successfully.");
-                return callback(null, 'Success');
+                return callback(null);
               } else {
                 console.error("Error downloading " + l + ".", err);
                 return callback(err);
               }
             });
-          });
+          }, callback);
         }
       });
   },
