@@ -43,7 +43,7 @@ module.exports = {
       function (err, locales) {
         console.log("Got locales", locales);
         if (!err) {
-          async.each(locales, function(l, callback) {
+          async.eachLimit(locales, 2, function(l, callback) {
             module.exports.downloadTranslationFile(l, options, function(err, res) {
               if (!err) {
                 console.log("Translation for " + l + " downloaded successfully.");
