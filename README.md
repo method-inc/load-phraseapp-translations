@@ -28,9 +28,11 @@ loadTranslations.initialize({
  * *access_token*: Required. Your PhraseApp access token.
  * *project_id*: Required. The ID of the project you want to pull down translations for.
  * *location*: Optional, defaults to current directory. If supplied, must be an existing path.
+ * *file_name_base*: Optional, defaults to `<code>`, which is replaced by the locale code.  Other replacable options are `<name>` and `<tag>`.  Can also include static text.
  * *file_format*: Optional, defaults to `node_json`, the format for [i18n-node-2](https://github.com/jeresig/i18n-node-2).
  * *file_extension*: Optional, defaults to `js`.
  * *transform*: Optional function that should be called with each locale's data if additional processing is required before it is saved. Takes a string containing the data from Phrase and should return a string containing the new data. Defaults to a no-op.
+ * *tag*: Optional, a tag name as specified in the [locales#download](https://phraseapp.com/docs/api/v2/locales/#download) API endpoint
 
 #### Callback
 Initialize also accepts an optional callback that returns an error and a success response.
