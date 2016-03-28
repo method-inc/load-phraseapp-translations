@@ -1,6 +1,6 @@
 {
   "name": "load-phraseapp-translations",
-  "version": "0.2.5",
+  "version": "0.2.5-tags",
   "description": "Download PhraseApp translation files for your app. Default format is i18n-node-2 compliant.",
   "main": "index.js",
   "scripts": {

@@ -32,6 +32,7 @@ module.exports = {
       file_format: "node_json",
       file_extension: "js",
       location: process.cwd(),
+      file_name_base: "<code>",
       transform: function(translations) { return translations; }
     };
 
@@ -41,15 +42,16 @@ module.exports = {
   download: function(options, callback) {
     module.exports.fetchLocales(options,
       function (err, locales) {
-        console.log("Got locales", locales);
+        console.log("Got locales", _.pluck(locales, "name"));
         if (!err) {
           async.eachLimit(locales, 2, function(l, callback) {
             module.exports.downloadTranslationFile(l, options, function(err, res) {
+              var localeTitle = l.name + "("+ l.code+")";
               if (!err) {
-                console.log("Translation for " + l + " downloaded successfully.");
+                console.log("Translation for " + localeTitle + " downloaded successfully.");
                 return callback(null);
               } else {
-                console.error("Error downloading " + l + ".", err);
+                console.error("Error downloading " + localeTitle + ".", err);
                 return callback(err);
               }
             });
@@ -63,7 +65,7 @@ module.exports = {
 
     request(path + '/projects/' + options.project_id + '/locales?access_token=' + options.access_token, function(err, res, body) {
       if (!err && res.statusCode == 200) {
-        locales = _.pluck(JSON.parse(body), "code");
+        locales = JSON.parse(body);
         return callback(null, locales);
       } else if (err) {
         console.error("An error occurred when fetching locales", err);
@@ -73,12 +75,22 @@ module.exports = {
   },
 
   downloadTranslationFile: function(locale, options, callback) {
-    var translationPath = path + '/projects/' + options.project_id + '/locales/' + locale + '/download?access_token=' + options.access_token + '&file_format=' + options.file_format;
+    var translationPath = path + '/projects/' + options.project_id + '/locales/' + locale.id + '/download?access_token=' + options.access_token + '&file_format=' + options.file_format;
+    var additionalOptions = ["tag", "include_empty_translations", "keep_notranslate_tags", "convert_emoji", /*"format_options",*/ "encoding", "skip_unverified_translations", "fallback_locale_id"];
+    _.each(additionalOptions, function (optionName) {
+      if(options[optionName] != undefined) {
+        translationPath += '&'+optionName+'='+options[optionName];
+      }
+    });
 
     request(translationPath, function(err, res, body) {
       if (!err && res.statusCode >= 200 && res.statusCode < 300) {
         var transformed = options.transform(body);
-        var fileName = options.location + "/" + locale + "." + options.file_extension;
+        var baseFileName = options.file_name_base;
+        _.each(["code", "name", "tag"], function (key) {
+          baseFileName = baseFileName.replace(new RegExp('\\<' + key + '\\>', 'ig'), locale[key] || options[key]);
+        });
+        var fileName = options.location + "/" + baseFileName + "." + options.file_extension;
 
         fs.writeFile(fileName, transformed, function(err) {
           if (err) {
