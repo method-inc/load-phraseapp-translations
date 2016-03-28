@@ -405,7 +405,6 @@ describe("#download using filename options", function() {
 
     after(function() {
         api.isDone();
-        api.cleanAll();
         fs.unlink(config.location + "/en_2_t.js");
         fs.unlink(config.location + "/de_1_t.js");
     });
