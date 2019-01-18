@@ -63,7 +63,7 @@ module.exports = {
 
     request(path + '/projects/' + options.project_id + '/locales?access_token=' + options.access_token, function(err, res, body) {
       if (!err && res.statusCode == 200) {
-        locales = _.pluck(JSON.parse(body), "code");
+        locales = _.map(JSON.parse(body), "code");
         return callback(null, locales);
       } else if (err) {
         console.error("An error occurred when fetching locales", err);
@@ -97,4 +97,4 @@ module.exports = {
       }
     });
   }
-}
+};
