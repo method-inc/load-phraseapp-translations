@@ -33,12 +33,12 @@
   "homepage": "https://github.com/Skookum/load-phraseapp-translations#readme",
   "devDependencies": {
     "chai": "^3.2.0",
-    "mocha": "^2.2.5",
-    "nock": "^2.9.1"
+    "mocha": "^5.2.0",
+    "nock": "^10.0.6"
   },
   "dependencies": {
     "async": "^1.4.2",
-    "lodash": "^3.10.0",
+    "lodash": "^4.17.11",
     "request": "^2.60.0"
   }
 }

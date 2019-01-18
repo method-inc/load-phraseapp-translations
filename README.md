@@ -52,7 +52,7 @@ loadTranslations.initialize({
 
 ## Tests
 ```
-npm test
+npm run test
 ```
 
 ## Release History
