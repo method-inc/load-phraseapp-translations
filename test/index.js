@@ -1,22 +1,22 @@
-var should = require("chai").should(),
-    fs = require("fs"),
-    nock = require("nock"),
-    request = require("request"),
-    _ = require('lodash'),
-    loadTranslations = require("../index"),
-    initialize = loadTranslations.initialize,
-    download = loadTranslations.download,
-    fetchLocales = loadTranslations.fetchLocales,
-    downloadTranslationFile = loadTranslations.downloadTranslationFile,
-    configure = loadTranslations.configure;
+const should = require('chai').should();
+const fs = require('fs');
+const nock = require('nock');
+const request = require('request');
+const _ = require('lodash');
+const loadTranslations = require('../index');
+const initialize = loadTranslations.initialize;
+const download = loadTranslations.download;
+const fetchLocales = loadTranslations.fetchLocales;
+const downloadTranslationFile = loadTranslations.downloadTranslationFile;
+const configure = loadTranslations.configure;
 
-var http = require("http");
+let http = require('http');
 
-describe("#configure", function() {
-  var config;
+describe('#configure', function() {
+  let config;
 
   before(function() {
-    var options = {
+    let options = {
       access_token: 1,
       project_id: 1,
       location: 'test'
@@ -25,38 +25,38 @@ describe("#configure", function() {
     config = configure(options);
   });
 
-  it("is an object", function() {
-    config.should.be.an("object");
+  it('is an object', function() {
+    config.should.be.an('object');
   });
 
-  it("has the required keys", function() {
+  it('has the required keys', function() {
     config.should.have.all.keys(
-      "access_token",
-      "project_id",
-      "file_format",
-      "file_extension",
-      "location",
-      "transform"
+      'access_token',
+      'project_id',
+      'file_format',
+      'file_extension',
+      'location',
+      'transform'
     );
   });
 
-  it("overrides file location", function() {
+  it('overrides file location', function() {
     config.should.have.property('location', 'test');
-  })
+  });
 
-  it("default transform does nothing", function() {
-    var output = {
-      "test": "file"
+  it('default transform does nothing', function() {
+    let output = {
+      'test': 'file'
     };
     config.transform(output).should.equal(output);
-  })
+  });
 });
 
-describe("#fetchLocales", function() {
-  var config, api;
+describe('#fetchLocales', function() {
+  let config, api;
 
   before(function() {
-    var options = {
+    let options = {
       access_token: 1,
       project_id: 1
     };
@@ -65,50 +65,50 @@ describe("#fetchLocales", function() {
   });
 
   beforeEach(function() {
-    api = nock("https://api.phraseapp.com")
-      .get("/v2/projects/1/locales")
-      .query({ access_token: 1 })
-      .reply(200, [
-        {
-            "id": "1",
-            "name": "de",
-            "code": "de",
-            "default": false,
-            "main": false,
-            "rtl": false,
-            "plural_forms": [
-                "zero",
-                "one",
-                "other"
-            ],
-            "created_at": "2015-07-13T15:56:07Z",
-            "updated_at": "2015-07-13T15:56:07Z",
-            "source_locale": null
-        },
-        {
-            "id": "2",
-            "name": "en",
-            "code": "en",
-            "default": true,
-            "main": false,
-            "rtl": false,
-            "plural_forms": [
-                "zero",
-                "one",
-                "other"
-            ],
-            "created_at": "2015-07-13T15:55:44Z",
-            "updated_at": "2015-07-13T15:55:45Z",
-            "source_locale": null
-        }
-      ]);
+    api = nock('https://api.phraseapp.com')
+    .get('/v2/projects/1/locales')
+    .query({ access_token: 1 })
+    .reply(200, [
+      {
+        'id': '1',
+        'name': 'de',
+        'code': 'de',
+        'default': false,
+        'main': false,
+        'rtl': false,
+        'plural_forms': [
+          'zero',
+          'one',
+          'other'
+        ],
+        'created_at': '2015-07-13T15:56:07Z',
+        'updated_at': '2015-07-13T15:56:07Z',
+        'source_locale': null
+      },
+      {
+        'id': '2',
+        'name': 'en',
+        'code': 'en',
+        'default': true,
+        'main': false,
+        'rtl': false,
+        'plural_forms': [
+          'zero',
+          'one',
+          'other'
+        ],
+        'created_at': '2015-07-13T15:55:44Z',
+        'updated_at': '2015-07-13T15:55:45Z',
+        'source_locale': null
+      }
+    ]);
   });
 
   afterEach(function() {
     api.isDone();
   });
 
-  it("has two locales", function(done) {
+  it('has two locales', function(done) {
     fetchLocales(config, function(err, res) {
       if (err) return done(err);
       res.should.have.length(2);
@@ -116,28 +116,28 @@ describe("#fetchLocales", function() {
     });
   });
 
-  it("is an array", function(done) {
+  it('is an array', function(done) {
     fetchLocales(config, function(err, res) {
       if (err) return done(err);
-      res.should.be.an("array");
+      res.should.be.an('array');
       done();
     });
   });
 
-  it("contains German and English", function(done) {
+  it('contains German and English', function(done) {
     fetchLocales(config, function(err, res) {
       if (err) return done(err);
-      res.should.have.members(["de", "en"]);
+      res.should.have.members(['de', 'en']);
       done();
     });
   });
 });
 
-describe("#downloadTranslationFiles", function() {
-  var config, api;
+describe('#downloadTranslationFiles', function() {
+  let config, api;
 
   before(function() {
-    var options = {
+    let options = {
       access_token: 1,
       project_id: 1
     };
@@ -146,20 +146,20 @@ describe("#downloadTranslationFiles", function() {
   });
 
   beforeEach(function() {
-    api = nock("https://api.phraseapp.com")
-      .persist()
-      .get("/v2/projects/1/locales/en/download")
-      .query({ access_token: 1, file_format: "node_json" })
-      .reply(200, {
-        "greeting": "Hi, %s",
-        "navigation.search": "Search",
-        "navigation.shopping_cart": "Shopping Cart",
-        "navigation.sign_in": "Sign In",
-        "navigation.wishlist": "Wishlist"
-      });
+    api = nock('https://api.phraseapp.com')
+    .persist()
+    .get('/v2/projects/1/locales/en/download')
+    .query({ access_token: 1, file_format: 'node_json' })
+    .reply(200, {
+      'greeting': 'Hi, %s',
+      'navigation.search': 'Search',
+      'navigation.shopping_cart': 'Shopping Cart',
+      'navigation.sign_in': 'Sign In',
+      'navigation.wishlist': 'Wishlist'
+    });
   });
 
-  it("downloads the translation file", function(done) {
+  it('downloads the translation file', function(done) {
     downloadTranslationFile('en', config, function(err, res) {
       if (err) return done(err);
       fs.exists(res, function(res) {
@@ -168,12 +168,12 @@ describe("#downloadTranslationFiles", function() {
     });
   });
 
-  it("has the correct contents in the translation file", function(done) {
-    var fileContents, apiFileContents, fileName;
+  it('has the correct contents in the translation file', function(done) {
+    let fileContents, apiFileContents, fileName;
 
-    request("https://api.phraseapp.com/v2/projects/1/locales/en/download?access_token=1&file_format=node_json",
+    request('https://api.phraseapp.com/v2/projects/1/locales/en/download?access_token=1&file_format=node_json',
       function(err, res, body) {
-        if (res.statusCode = 200 && !err) {
+        if (res.statusCode === 200 && !err) {
           apiFileContents = body;
         }
       });
@@ -188,131 +188,131 @@ describe("#downloadTranslationFiles", function() {
   });
 
   afterEach(function() {
-    fs.unlink(config.location + "/en.js");
+    fs.unlink(config.location + '/en.js');
     api.isDone();
   });
 });
 
-describe("#download", function() {
-  var config, api;
+describe('#download', function() {
+  let config, api;
 
   before(function() {
-    var options = {
+    let options = {
       access_token: 1,
       project_id: 1
     };
 
     config = configure(options);
 
-    api = nock("https://api.phraseapp.com")
-      .persist()
-      .get("/v2/projects/1/locales/en/download")
-      .query({ access_token: 1, file_format: "node_json" })
-      .reply(200, {
-        "greeting": "Hi, %s",
-        "navigation.search": "Search",
-        "navigation.shopping_cart": "Shopping Cart",
-        "navigation.sign_in": "Sign In",
-        "navigation.wishlist": "Wishlist"
-      })
-      .get("/v2/projects/1/locales/de/download")
-      .query({ access_token: 1, file_format: "node_json" })
-      .reply(200, {
-        "greeting": "Hallo, %s",
-        "navigation.search": "Suchen",
-        "navigation.shopping_cart": "Einkaufswagen",
-        "navigation.sign_in": "Anmeldung",
-        "navigation.wishlist": "Wunschzettel"
-      })
-      .get("/v2/projects/1/locales")
-      .query({ access_token: 1 })
-      .reply(200, [
-        {
-            "id": "1",
-            "name": "de",
-            "code": "de",
-            "default": false,
-            "main": false,
-            "rtl": false,
-            "plural_forms": [
-                "zero",
-                "one",
-                "other"
-            ],
-            "created_at": "2015-07-13T15:56:07Z",
-            "updated_at": "2015-07-13T15:56:07Z",
-            "source_locale": null
-        },
-        {
-            "id": "2",
-            "name": "en",
-            "code": "en",
-            "default": true,
-            "main": false,
-            "rtl": false,
-            "plural_forms": [
-                "zero",
-                "one",
-                "other"
-            ],
-            "created_at": "2015-07-13T15:55:44Z",
-            "updated_at": "2015-07-13T15:55:45Z",
-            "source_locale": null
-        }
-      ]);
+    api = nock('https://api.phraseapp.com')
+    .persist()
+    .get('/v2/projects/1/locales/en/download')
+    .query({ access_token: 1, file_format: 'node_json' })
+    .reply(200, {
+      'greeting': 'Hi, %s',
+      'navigation.search': 'Search',
+      'navigation.shopping_cart': 'Shopping Cart',
+      'navigation.sign_in': 'Sign In',
+      'navigation.wishlist': 'Wishlist'
+    })
+    .get('/v2/projects/1/locales/de/download')
+    .query({ access_token: 1, file_format: 'node_json' })
+    .reply(200, {
+      'greeting': 'Hallo, %s',
+      'navigation.search': 'Suchen',
+      'navigation.shopping_cart': 'Einkaufswagen',
+      'navigation.sign_in': 'Anmeldung',
+      'navigation.wishlist': 'Wunschzettel'
+    })
+    .get('/v2/projects/1/locales')
+    .query({ access_token: 1 })
+    .reply(200, [
+      {
+        'id': '1',
+        'name': 'de',
+        'code': 'de',
+        'default': false,
+        'main': false,
+        'rtl': false,
+        'plural_forms': [
+          'zero',
+          'one',
+          'other'
+        ],
+        'created_at': '2015-07-13T15:56:07Z',
+        'updated_at': '2015-07-13T15:56:07Z',
+        'source_locale': null
+      },
+      {
+        'id': '2',
+        'name': 'en',
+        'code': 'en',
+        'default': true,
+        'main': false,
+        'rtl': false,
+        'plural_forms': [
+          'zero',
+          'one',
+          'other'
+        ],
+        'created_at': '2015-07-13T15:55:44Z',
+        'updated_at': '2015-07-13T15:55:45Z',
+        'source_locale': null
+      }
+    ]);
   });
 
   after(function() {
     api.isDone();
-    fs.unlink(config.location + "/en.js");
-    fs.unlink(config.location + "/de.js");
+    fs.unlink(config.location + '/en.js');
+    fs.unlink(config.location + '/de.js');
   });
 
-  it("downloads all of the files", function(done) {
+  it('downloads all of the files', function(done) {
     download(config, function(err, res) {
       if (err) return done(err);
 
-      fs.existsSync(config.location + "/en.js");
-      fs.existsSync(config.location + "/de.js");
+      fs.existsSync(config.location + '/en.js');
+      fs.existsSync(config.location + '/de.js');
     });
 
     done();
   });
 
-  it("has the correct contents in the downloaded files", function(done) {
-    var apiFileContents = {};
-    var fileContents = {};
+  it('has the correct contents in the downloaded files', function(done) {
+    let apiFileContents = {};
+    let fileContents = {};
 
-    request("https://api.phraseapp.com/v2/projects/1/locales/en/download?access_token=1&file_format=node_json",
+    request('https://api.phraseapp.com/v2/projects/1/locales/en/download?access_token=1&file_format=node_json',
       function(err, res, body) {
-        if (res.statusCode = 200 && !err) {
+        if (res.statusCode === 200 && !err) {
           apiFileContents['en'] = body;
         }
       });
 
-    request("https://api.phraseapp.com/v2/projects/1/locales/de/download?access_token=1&file_format=node_json",
+    request('https://api.phraseapp.com/v2/projects/1/locales/de/download?access_token=1&file_format=node_json',
       function(err, res, body) {
-        if (res.statusCode = 200 && !err) {
+        if (res.statusCode === 200 && !err) {
           apiFileContents['de'] = body;
         }
       });
 
-      download(config, function(err, res) {
-        if (err) return done(err);
+    download(config, function(err, res) {
+      if (err) return done(err);
 
-        fileContents['en'] = fs.readFileSync(config.location + "/en.js").toString();
-        fileContents['de'] = fs.readFileSync(config.location + "/de.js").toString();
+      fileContents['en'] = fs.readFileSync(config.location + '/en.js').toString();
+      fileContents['de'] = fs.readFileSync(config.location + '/de.js').toString();
 
-        fileContents.should.deep.equal(apiFileContents);
-      });
+      fileContents.should.deep.equal(apiFileContents);
+    });
 
-      done();
+    done();
   });
 
-  it("transforms the data correctly", function(done) {
-    var apiFileContents = {};
-    var fileContents = {};
-    var new_config = _.extend({}, config, {
+  it('transforms the data correctly', function(done) {
+    let apiFileContents = {};
+    let fileContents = {};
+    let new_config = _.extend({}, config, {
       transform: function(data) {
         data.test_key = 'hello';
         return data;
@@ -322,7 +322,7 @@ describe("#download", function() {
     download(new_config, function(err, res) {
       if (err) return done(err);
 
-      fileContents['en'] = fs.readFileSync(config.location + "/en.js").toString();
+      fileContents['en'] = fs.readFileSync(config.location + '/en.js').toString();
 
       JSON.parse(fileContents['en']).should.contain.key('test_key');
     });
@@ -330,8 +330,8 @@ describe("#download", function() {
   });
 });
 
-describe("#initialize", function() {
-  var api, options;
+describe('#initialize', function() {
+  let api, options;
 
   before(function() {
     options = {
@@ -340,108 +340,108 @@ describe("#initialize", function() {
       location: process.cwd()
     };
 
-    api = nock("https://api.phraseapp.com")
-      .persist()
-      .get("/v2/projects/1/locales/en/download")
-      .query({ access_token: 1, file_format: "node_json" })
-      .reply(200, {
-        "greeting": "Hi, %s",
-        "navigation.search": "Search",
-        "navigation.shopping_cart": "Shopping Cart",
-        "navigation.sign_in": "Sign In",
-        "navigation.wishlist": "Wishlist"
-      })
-      .get("/v2/projects/1/locales/de/download")
-      .query({ access_token: 1, file_format: "node_json" })
-      .reply(200, {
-        "greeting": "Hallo, %s",
-        "navigation.search": "Suchen",
-        "navigation.shopping_cart": "Einkaufswagen",
-        "navigation.sign_in": "Anmeldung",
-        "navigation.wishlist": "Wunschzettel"
-      })
-      .get("/v2/projects/1/locales")
-      .query({ access_token: 1 })
-      .reply(200, [
-        {
-            "id": "1",
-            "name": "de",
-            "code": "de",
-            "default": false,
-            "main": false,
-            "rtl": false,
-            "plural_forms": [
-                "zero",
-                "one",
-                "other"
-            ],
-            "created_at": "2015-07-13T15:56:07Z",
-            "updated_at": "2015-07-13T15:56:07Z",
-            "source_locale": null
-        },
-        {
-            "id": "2",
-            "name": "en",
-            "code": "en",
-            "default": true,
-            "main": false,
-            "rtl": false,
-            "plural_forms": [
-                "zero",
-                "one",
-                "other"
-            ],
-            "created_at": "2015-07-13T15:55:44Z",
-            "updated_at": "2015-07-13T15:55:45Z",
-            "source_locale": null
-        }
-      ]);
+    api = nock('https://api.phraseapp.com')
+    .persist()
+    .get('/v2/projects/1/locales/en/download')
+    .query({ access_token: 1, file_format: 'node_json' })
+    .reply(200, {
+      'greeting': 'Hi, %s',
+      'navigation.search': 'Search',
+      'navigation.shopping_cart': 'Shopping Cart',
+      'navigation.sign_in': 'Sign In',
+      'navigation.wishlist': 'Wishlist'
+    })
+    .get('/v2/projects/1/locales/de/download')
+    .query({ access_token: 1, file_format: 'node_json' })
+    .reply(200, {
+      'greeting': 'Hallo, %s',
+      'navigation.search': 'Suchen',
+      'navigation.shopping_cart': 'Einkaufswagen',
+      'navigation.sign_in': 'Anmeldung',
+      'navigation.wishlist': 'Wunschzettel'
+    })
+    .get('/v2/projects/1/locales')
+    .query({ access_token: 1 })
+    .reply(200, [
+      {
+        'id': '1',
+        'name': 'de',
+        'code': 'de',
+        'default': false,
+        'main': false,
+        'rtl': false,
+        'plural_forms': [
+          'zero',
+          'one',
+          'other'
+        ],
+        'created_at': '2015-07-13T15:56:07Z',
+        'updated_at': '2015-07-13T15:56:07Z',
+        'source_locale': null
+      },
+      {
+        'id': '2',
+        'name': 'en',
+        'code': 'en',
+        'default': true,
+        'main': false,
+        'rtl': false,
+        'plural_forms': [
+          'zero',
+          'one',
+          'other'
+        ],
+        'created_at': '2015-07-13T15:55:44Z',
+        'updated_at': '2015-07-13T15:55:45Z',
+        'source_locale': null
+      }
+    ]);
   });
 
   after(function() {
     api.isDone();
-    fs.unlink(options.location + "/en.js");
-    fs.unlink(options.location + "/de.js");
+    fs.unlink(options.location + '/en.js');
+    fs.unlink(options.location + '/de.js');
   });
 
-  it("downloads all of the files", function(done) {
+  it('downloads all of the files', function(done) {
     initialize(options, function(err, res) {
       if (err) return done(err);
 
-      fs.existsSync(options.location + "/en.js");
-      fs.existsSync(options.location + "/de.js");
+      fs.existsSync(options.location + '/en.js');
+      fs.existsSync(options.location + '/de.js');
     });
 
     done();
   });
 
-  it("has the correct contents in the downloaded files", function(done) {
-    var apiFileContents = {};
-    var fileContents = {};
+  it('has the correct contents in the downloaded files', function(done) {
+    let apiFileContents = {};
+    let fileContents = {};
 
-    request("https://api.phraseapp.com/v2/projects/1/locales/en/download?access_token=1&file_format=node_json",
+    request('https://api.phraseapp.com/v2/projects/1/locales/en/download?access_token=1&file_format=node_json',
       function(err, res, body) {
-        if (res.statusCode = 200 && !err) {
+        if (res.statusCode === 200 && !err) {
           apiFileContents['en'] = body;
         }
       });
 
-    request("https://api.phraseapp.com/v2/projects/1/locales/de/download?access_token=1&file_format=node_json",
+    request('https://api.phraseapp.com/v2/projects/1/locales/de/download?access_token=1&file_format=node_json',
       function(err, res, body) {
-        if (res.statusCode = 200 && !err) {
+        if (res.statusCode === 200 && !err) {
           apiFileContents['de'] = body;
         }
       });
 
-      initialize(options, function(err, res) {
-        if (err) return done(err);
+    initialize(options, function(err, res) {
+      if (err) return done(err);
 
-        fileContents['en'] = fs.readFileSync(options.location + "/en.js").toString();
-        fileContents['de'] = fs.readFileSync(options.location + "/de.js").toString();
+      fileContents['en'] = fs.readFileSync(options.location + '/en.js').toString();
+      fileContents['de'] = fs.readFileSync(options.location + '/de.js').toString();
 
-        fileContents.should.deep.equal(apiFileContents);
-      });
+      fileContents.should.deep.equal(apiFileContents);
+    });
 
-      done();
+    done();
   });
 });
